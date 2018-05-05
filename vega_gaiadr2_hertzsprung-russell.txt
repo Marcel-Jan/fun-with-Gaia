@@ -1,0 +1,77 @@
+{
+  // We use Vega-Lite syntax here instead of Vega. The Vega visualization
+  // supports both and we can specify which one we want to use by specifying
+  // the corresponding schema here.
+  $schema: "https://vega.github.io/schema/vega-lite/v2.json"
+  // Use points for drawing to actually create a scatterplot
+  mark: point
+  // Specify where to load data from
+  data: {
+    // By using an object to the url parameter we will
+    // construct an Elasticsearch query
+    url: {
+      // Context == true means filters of the dashboard will be taken into account
+      %context%: true
+      // Specify on which field the time picker should operate
+      %timefield%: @timestamp
+      // Specify the index pattern to load data from
+      index: gaiadr2*
+      // This body will be send to Elasticsearch's _search endpoint
+      // You can use everything the ES Query DSL supports here
+      body: {
+        // Set the size to load 10000 documents
+        size: 10000,
+        // Just ask for the fields we actually need for visualization
+        _source: ['astrometric_pseudo_colour', 'lum_val', ' visibility_periods_used']
+      }
+    }
+    // Tell Vega, that the array of data will be inside hits.hits of the response
+    // since the result returned from Elasticsearch fill have a format like:
+    // {
+    //   hits: {
+    //     total: 42000,
+    //     max_score: 2,
+    //     hits: [
+    //       < our individual documents >
+    //     ]
+    //   }
+    // }
+    format: { property: "hits.hits" }
+  }
+  // Specify what data will be drawn on which axis
+  encoding: {
+    x: {
+      // Draw the time field on the x-axis in temporal mode (i.e. as a time axis)
+      field: _source.astrometric_pseudo_colour
+      type: quantitative
+      // Hide the axis label for the x-axis
+      axis: { title: "Astrometric Pseudo Colour" }
+      scale: { domain: [1.8, 1.2] }
+    }
+    y: {
+      // Draw the bytes of each document on the y-axis
+      field: _source.lum_val
+      // Mark the y-axis as quantitative
+      type: quantitative
+      // Specify the label for this axis
+      axis: { title: "Stellar luminosity" }
+      scale: { type: "log" }
+    }
+    color: {
+      // Make the color of each point depend on the _source.extension field
+      field:  _source.visibility_periods_used
+      // Treat different values as completely unrelated values to each other.
+      // You could switch this to quantitative if you have a numeric field and
+      // want to create a color scale from one color to another depending on that
+      // field's value.
+      type: nominal
+      // Rename the legend title so it won't just state: "_source.extension"
+      legend: { title: 'visibility_periods_used' }
+    }
+    shape: {
+      // Also make the shape of each point dependent on the extension.
+      field: _source.visibility_periods_used
+      type: nominal
+    }
+  }
+}
