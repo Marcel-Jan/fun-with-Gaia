@@ -1,0 +1,29 @@
+# How to load the Gaia DR2 data
+# =============================
+
+# Downloading one of the files.
+wget http://cdn.gea.esac.esa.int/Gaia/gdr2/gaia_source/csv/GaiaSource_1000172165251650944_1000424567594791808.csv.gz
+gunzip GaiaSource_1000172165251650944_1000424567594791808.csv.gz
+
+
+# How to delete your index mapping if you screwed up.
+curlh -XDELETE "localhost:9200/gaiadr2"
+
+# Creating the index mapping.
+# --------------------------
+
+Run the command in es6_gaiadr2_index.txt
+# Maybe I should have called it es6_gaiadr2_index.sh
+
+
+# Loading the data with Logstash
+# ------------------------------
+sudo /usr/share/logstash/bin/logstash -f logstash_gaiadr2.conf
+
+# Or if you want to store output in a log file:
+sudo /usr/share/logstash/bin/logstash -f logstash_gaiadr2.conf > logstash_gaiadr2.log
+
+
+# Adding the Hertzsprung-Russell diagram in Kibana
+# ------------------------------------------------
+Go to Visualizations, click Plus sign, choose Vega (end of page), copy paste the code in vega_gaiadr2_hertzsprung-russell.txt
