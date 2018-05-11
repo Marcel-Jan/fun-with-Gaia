@@ -1,0 +1,32 @@
+# Preparing your virtual machine
+# ==============================
+
+# Useful stuff
+# ------------
+
+# It's much more pleasant to use your VM via Putty or simular terminal applications. For this you need OpenSSH.
+sudo apt-get install openssh-server
+
+# Possibly useful. Maybe. Can't hurt.
+sudo apt install unzip
+
+
+# Logstash
+# --------
+sudo apt-get update
+sudo apt-get install logstash
+
+
+# Kibana
+# --------
+sudo apt-get install kibana
+sudo vi /etc/kibana/kibana.yml
+# change server.host to "0.0.0.0"
+
+sudo /bin/systemctl daemon-reload
+sudo /bin/systemctl enable kibana.service
+sudo /bin/systemctl start kibana.service
+
+# Kibana is now available on port 5601
+# Browser 127.0.0.1:5601
+
