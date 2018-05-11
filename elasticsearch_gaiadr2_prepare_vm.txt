@@ -1,6 +1,10 @@
 # Preparing your virtual machine
 # ==============================
 
+# Create the VM according to instructions in Frank Kane's video:
+https://youtu.be/-wH13NIcP9g
+
+
 # Useful stuff
 # ------------
 
