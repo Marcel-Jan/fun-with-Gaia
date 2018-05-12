@@ -1,4 +1,6 @@
 {
+  // A Hertzsprung-Russell diagram for Gaia DR2 data written in Vega for Kibana.
+  // ---------------------------------------------------------------------------
   // We use Vega-Lite syntax here instead of Vega. The Vega visualization
   // supports both and we can specify which one we want to use by specifying
   // the corresponding schema here.
@@ -41,11 +43,11 @@
   // Specify what data will be drawn on which axis
   encoding: {
     x: {
-      // Draw the time field on the x-axis in temporal mode (i.e. as a time axis)
       field: _source.astrometric_pseudo_colour
       type: quantitative
-      // Hide the axis label for the x-axis
+      // Show the title of the X-axis.
       axis: { title: "Astrometric Pseudo Colour" }
+      // A HR diagram goes from high wavelengths to low wavelengths. You set that in the domain.
       scale: { domain: [1.8, 1.2] }
     }
     y: {
@@ -55,21 +57,24 @@
       type: quantitative
       // Specify the label for this axis
       axis: { title: "Stellar luminosity" }
+      // The luminousity in the HR diagram has a logarithmic scale.
       scale: { type: "log" }
     }
     color: {
-      // Make the color of each point depend on the _source.extension field
+      // Make the color of each point depend on the _source.visibility_periods_used field
+      // Actually this was not very useful.
       field:  _source.visibility_periods_used
       // Treat different values as completely unrelated values to each other.
       // You could switch this to quantitative if you have a numeric field and
       // want to create a color scale from one color to another depending on that
       // field's value.
       type: nominal
-      // Rename the legend title so it won't just state: "_source.extension"
+      // Rename the legend title so it won't just state: "_source.visibility_periods_used"
       legend: { title: 'visibility_periods_used' }
     }
     shape: {
       // Also make the shape of each point dependent on the extension.
+      // In this case not so useful either.
       field: _source.visibility_periods_used
       type: nominal
     }
